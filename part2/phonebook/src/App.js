@@ -52,13 +52,30 @@ const Filter = ({ filter, setFilter }) => (
 const Persons = ({ persons, onRemoved }) =>
   persons.map((p) => <Person {...p} key={p.name} onRemoved={onRemoved} />);
 
+const Notification = ({ message }) => {
+  const style = {
+    borderColor: "green",
+    borderWidth: "3px",
+    borderStyle: "solid",
+    background: "grey",
+    margin: "1em",
+  };
+  return <div style={style}>{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     fetchAll().then((p) => setPersons(p));
   }, []);
+
+  const displayMsg = (msg) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(null), 5000);
+  };
 
   const handleAdd = async (newPerson) => {
     const existing = persons.find(({ name }) => name == newPerson.name);
@@ -72,9 +89,11 @@ const App = () => {
       setPersons((old) =>
         old.map((p) => (p.id === newPersonServer.id ? newPersonServer : p))
       );
+      displayMsg(`Updated ${newPersonServer.name}`);
     } else {
       newPersonServer = await add(newPerson);
       setPersons(persons.concat(newPersonServer));
+      displayMsg(`Added ${newPersonServer.name}`);
     }
     console.log({ newPerson, newPersonServer });
   };
@@ -91,6 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      {message ? <Notification message={message} /> : null}
       <PersonForm onPersonCreated={handleAdd} />
       <h2>Numbers</h2>
       <Filter filter={filter} setFilter={setFilter} />
