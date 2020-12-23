@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-const CountryName = ({ country: { name } }) => <p>{name}</p>;
-
 const LanguageList = ({ languages }) => (
   <>
     <h2>Languages</h2>
@@ -23,6 +21,30 @@ const CountryDetails = ({ country }) => (
   </article>
 );
 
+const CountryInList = (props) => {
+  const {
+    country: { name },
+    country,
+  } = props;
+  const [showDetails, setShowDetails] = useState(false);
+
+  const toggle = () => {
+    setShowDetails((old) => !old);
+  };
+
+  return (
+    <>
+      <p>
+        {name} <button onClick={toggle}>{showDetails ? "hide" : "show"}</button>
+      </p>
+      {showDetails ? <CountryDetails country={country} /> : null}
+    </>
+  );
+};
+
+const ManyCountries = ({ countries }) =>
+  countries.map((c) => <CountryInList key={c.numericCode} country={c} />);
+
 const Countries = ({ countries }) => {
   const [filter, setFilter] = useState("");
 
@@ -37,7 +59,7 @@ const Countries = ({ countries }) => {
       {filtered.length > 10 ? (
         <p>Too many matches, specify another filter</p>
       ) : filtered.length > 1 ? (
-        filtered.map((c) => <CountryName key={c.numericCode} country={c} />)
+        <ManyCountries countries={filtered} />
       ) : filtered.length == 1 ? (
         <CountryDetails country={filtered[0]} />
       ) : (
