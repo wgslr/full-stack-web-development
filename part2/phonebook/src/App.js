@@ -8,6 +8,12 @@ const App = () => {
 
   const handleAdd = (event) => {
     event.preventDefault();
+
+    if (persons.findIndex(({ name }) => name == newName) >= 0) {
+      alert(`${newName} is already added to phonebook`);
+      return;
+    }
+
     setPersons(persons.concat({ name: newName }));
     setNewName("");
   };
