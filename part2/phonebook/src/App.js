@@ -45,6 +45,11 @@ const Filter = ({ filter, setFilter }) => (
 const Persons = ({ persons }) =>
   persons.map((p) => <Person {...p} key={p.name} />);
 
+const pushPerson = async (person) => {
+  const resp = await axios.post("http://127.0.0.1:3001/persons", person);
+  return resp.data;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
@@ -55,13 +60,15 @@ const App = () => {
       .then((resp) => setPersons(resp.data));
   }, []);
 
-  const handleAdd = (newPerson) => {
+  const handleAdd = async (newPerson) => {
     if (persons.findIndex(({ name }) => name == newPerson.name) >= 0) {
       alert(`${newPerson.name} is already added to phonebook`);
       return;
     }
 
-    setPersons(persons.concat(newPerson));
+    const newPersonServer = await pushPerson(newPerson);
+    console.log({ newPerson, newPersonServer });
+    setPersons(persons.concat(newPersonServer));
   };
 
   const displayed = persons.filter(({ name }) =>
