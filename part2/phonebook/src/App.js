@@ -22,10 +22,11 @@ const PersonForm = ({ onPersonCreated }) => {
   return (
     <form onSubmit={onSubmit}>
       <div>
-        name: <input onChange={(e) => setName(e.target.value)} />
+        name: <input onChange={(e) => setName(e.target.value)} value={name} />
       </div>
       <div>
-        number: <input onChange={(e) => setNumber(e.target.value)} />
+        number:{" "}
+        <input onChange={(e) => setNumber(e.target.value)} value={number} />
       </div>
       <div>
         <button type="submit">add</button>
