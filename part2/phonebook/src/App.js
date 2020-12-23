@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { add as pushPerson, fetchAll } from "./services/persons";
 
 const Person = ({ name, number }) => (
   <p>
@@ -45,19 +46,12 @@ const Filter = ({ filter, setFilter }) => (
 const Persons = ({ persons }) =>
   persons.map((p) => <Person {...p} key={p.name} />);
 
-const pushPerson = async (person) => {
-  const resp = await axios.post("http://127.0.0.1:3001/persons", person);
-  return resp.data;
-};
-
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:3001/persons")
-      .then((resp) => setPersons(resp.data));
+    fetchAll().then((p) => setPersons(p));
   }, []);
 
   const handleAdd = async (newPerson) => {
