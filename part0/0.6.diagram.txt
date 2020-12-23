@@ -1,0 +1,14 @@
+
+note over browser:
+user clicks the submit button form
+end note
+
+note over browser:
+JS code in the browser displays the new node
+and sends a request storing it on the server
+end note
+
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: HTTP 201 Created; Body: {"message":"note created"}
+state over A: Initial state
