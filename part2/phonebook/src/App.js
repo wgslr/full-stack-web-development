@@ -35,6 +35,15 @@ const PersonForm = ({ onPersonCreated }) => {
   );
 };
 
+const Filter = ({ filter, setFilter }) => (
+  <>
+    Search: <input onChange={(e) => setFilter(e.target.value)} />
+  </>
+);
+
+const Persons = ({ persons }) =>
+  persons.map((p) => <Person {...p} key={p.name} />);
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456" },
@@ -63,10 +72,8 @@ const App = () => {
       <h2>Phonebook</h2>
       <PersonForm onPersonCreated={handleAdd} />
       <h2>Numbers</h2>
-      Search: <input onChange={(e) => setFilter(e.target.value)} />
-      {displayed.map((p) => (
-        <Person {...p} key={p.name} />
-      ))}
+      <Filter filter={filter} setFilter={setFilter} />
+      <Persons persons={displayed} />
     </div>
   );
 };
