@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 
-const Person = ({ name }) => <p>{name}</p>;
+const Person = ({ name, number }) => (
+  <p>
+    {name} {number}
+  </p>
+);
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
 
   const handleAdd = (event) => {
     event.preventDefault();
@@ -14,8 +19,9 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat({ name: newName }));
+    setPersons(persons.concat({ name: newName, number: newNumber }));
     setNewName("");
+    setNewNumber("");
   };
 
   return (
@@ -24,6 +30,9 @@ const App = () => {
       <form onSubmit={handleAdd}>
         <div>
           name: <input onChange={(e) => setNewName(e.target.value)} />
+        </div>
+        <div>
+          number: <input onChange={(e) => setNewNumber(e.target.value)} />
         </div>
         <div>
           <button type="submit" onSubmit={handleAdd}>
