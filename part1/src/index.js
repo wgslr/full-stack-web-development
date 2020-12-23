@@ -3,12 +3,13 @@ import ReactDOM from "react-dom";
 
 const Header = ({ course }) => <h1>{course}</h1>;
 
-const Content = ({ parts }) =>
-  parts.map(({ part, exercises }) => (
-    <p>
-      {part} {exercises}
-    </p>
-  ));
+const Part = ({ part, exercise }) => (
+  <p>
+    {part} {exercise}
+  </p>
+);
+
+const Content = ({ parts }) => parts.map((part) => <Part {...part} />);
 
 const Total = ({ total }) => <p>Number of exercises {total}</p>;
 
