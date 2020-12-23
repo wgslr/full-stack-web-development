@@ -4,6 +4,9 @@ import ReactDOM from "react-dom";
 const Statistics = (props) => {
   const { good, neutral, bad } = props;
   const allScores = good + neutral + bad;
+  if (allScores == 0) {
+    return <p>No feedback given</p>;
+  }
   const avg = (good * 1 + bad * -1) / allScores;
   const positive = good / allScores;
   return (
