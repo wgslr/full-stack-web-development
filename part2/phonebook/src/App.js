@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { add as pushPerson, fetchAll, remove } from "./services/persons";
+import { overwrite, fetchAll, remove, add } from "./services/persons";
 
 const Person = ({ id, name, number, onRemoved }) => {
   const handleRemove = () => {
@@ -45,7 +45,7 @@ const PersonForm = ({ onPersonCreated }) => {
 
 const Filter = ({ filter, setFilter }) => (
   <>
-    Search: <input onChange={(e) => setFilter(e.target.value)} />
+    Search: <input onChange={(e) => setFilter(e.target.value)} value={filter} />
   </>
 );
 
@@ -61,14 +61,22 @@ const App = () => {
   }, []);
 
   const handleAdd = async (newPerson) => {
-    if (persons.findIndex(({ name }) => name == newPerson.name) >= 0) {
-      alert(`${newPerson.name} is already added to phonebook`);
-      return;
+    const existing = persons.find(({ name }) => name == newPerson.name);
+    let newPersonServer;
+    if (existing !== undefined) {
+      if (!window.confirm(`${newPerson.name} already exists. Update?`)) {
+        return;
+      }
+      newPerson.id = existing.id;
+      newPersonServer = await overwrite(newPerson);
+      setPersons((old) =>
+        old.map((p) => (p.id === newPersonServer.id ? newPersonServer : p))
+      );
+    } else {
+      newPersonServer = await add(newPerson);
+      setPersons(persons.concat(newPersonServer));
     }
-
-    const newPersonServer = await pushPerson(newPerson);
     console.log({ newPerson, newPersonServer });
-    setPersons(persons.concat(newPersonServer));
   };
 
   const onRemoved = async (id) => {
