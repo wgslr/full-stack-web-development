@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { add as pushPerson, fetchAll } from "./services/persons";
+import { add as pushPerson, fetchAll, remove } from "./services/persons";
 
-const Person = ({ name, number }) => (
-  <p>
-    {name} {number}
-  </p>
-);
+const Person = ({ id, name, number, onRemoved }) => {
+  const handleRemove = () => {
+    window.confirm(`remove ${name}?`) && onRemoved(id);
+  };
+  return (
+    <p>
+      {name} {number}
+      <button onClick={handleRemove}>Remove</button>
+    </p>
+  );
+};
 
 const PersonForm = ({ onPersonCreated }) => {
   const [name, setName] = useState("");
@@ -43,8 +49,8 @@ const Filter = ({ filter, setFilter }) => (
   </>
 );
 
-const Persons = ({ persons }) =>
-  persons.map((p) => <Person {...p} key={p.name} />);
+const Persons = ({ persons, onRemoved }) =>
+  persons.map((p) => <Person {...p} key={p.name} onRemoved={onRemoved} />);
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -65,6 +71,11 @@ const App = () => {
     setPersons(persons.concat(newPersonServer));
   };
 
+  const onRemoved = async (id) => {
+    await remove(id);
+    setPersons((old) => old.filter((p) => p.id !== id));
+  };
+
   const displayed = persons.filter(({ name }) =>
     name.toLowerCase().includes(filter.toLowerCase())
   );
@@ -75,7 +86,7 @@ const App = () => {
       <PersonForm onPersonCreated={handleAdd} />
       <h2>Numbers</h2>
       <Filter filter={filter} setFilter={setFilter} />
-      <Persons persons={displayed} />
+      <Persons persons={displayed} onRemoved={onRemoved} />
     </div>
   );
 };
