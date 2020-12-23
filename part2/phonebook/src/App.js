@@ -6,6 +6,34 @@ const Person = ({ name, number }) => (
   </p>
 );
 
+const PersonForm = ({ onPersonCreated }) => {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    onPersonCreated({
+      name,
+      number,
+    });
+    setName("");
+    setNumber("");
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        name: <input onChange={(e) => setName(e.target.value)} />
+      </div>
+      <div>
+        number: <input onChange={(e) => setNumber(e.target.value)} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: "Arto Hellas", number: "040-123456" },
@@ -14,21 +42,15 @@ const App = () => {
     { name: "Mary Poppendieck", number: "39-23-6423122" },
   ]);
 
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
 
-  const handleAdd = (event) => {
-    event.preventDefault();
-
-    if (persons.findIndex(({ name }) => name == newName) >= 0) {
-      alert(`${newName} is already added to phonebook`);
+  const handleAdd = (newPerson) => {
+    if (persons.findIndex(({ name }) => name == newPerson.name) >= 0) {
+      alert(`${newPerson.name} is already added to phonebook`);
       return;
     }
 
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName("");
-    setNewNumber("");
+    setPersons(persons.concat(newPerson));
   };
 
   const displayed = persons.filter(({ name }) =>
@@ -38,19 +60,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={handleAdd}>
-        <div>
-          name: <input onChange={(e) => setNewName(e.target.value)} />
-        </div>
-        <div>
-          number: <input onChange={(e) => setNewNumber(e.target.value)} />
-        </div>
-        <div>
-          <button type="submit" onSubmit={handleAdd}>
-            add
-          </button>
-        </div>
-      </form>
+      <PersonForm onPersonCreated={handleAdd} />
       <h2>Numbers</h2>
       Search: <input onChange={(e) => setFilter(e.target.value)} />
       {displayed.map((p) => (
