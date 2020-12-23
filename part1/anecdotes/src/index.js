@@ -32,13 +32,30 @@ const App = ({ anecdotes }) => {
     setVotes(newVotes);
   };
 
+  let bestAnecdoteIdx = 0;
+  let bestAnecdoteVotes = votes[0];
+  for (const key in votes) {
+    if (Object.hasOwnProperty.call(votes, key)) {
+      const element = votes[key];
+      console.log({ key, element, bestAnecdoteIdx, bestAnecdoteVotes });
+      if (element > bestAnecdoteVotes) {
+        bestAnecdoteIdx = key;
+        bestAnecdoteVotes = element;
+      }
+    }
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
 
       <button onClick={vote}>vote</button>
       <button onClick={randomize}>next anecdote</button>
+
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[bestAnecdoteIdx]}</p>
     </div>
   );
 };
