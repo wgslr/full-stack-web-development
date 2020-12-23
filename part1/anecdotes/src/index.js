@@ -1,20 +1,43 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-const App = (props) => {
-  const [selected, setSelected] = useState(0);
-  const length = props.anecdotes.length;
+const App = ({ anecdotes }) => {
+  const length = anecdotes.length;
 
+  const [selected, setSelected] = useState(0);
+
+  const [votes, setVotes] = useState(() => {
+    const votesBuilder = {};
+    anecdotes.forEach((_, index) => {
+      votesBuilder[index] = 0;
+    });
+    return votesBuilder;
+  });
+
+  console.log({ votes });
   const randomize = () => {
-    const newNumber = Math.floor(Math.random() * length);
-    console.log({ newNumber });
+    let newNumber = selected;
+    while (newNumber == selected) {
+      newNumber = Math.floor(Math.random() * length);
+    }
+
     setSelected(newNumber);
+  };
+
+  const vote = () => {
+    const newVotes = {
+      ...votes,
+      [selected]: votes[selected] + 1,
+    };
+    setVotes(newVotes);
   };
 
   return (
     <div>
-      <p>{props.anecdotes[selected]}</p>
+      <p>{anecdotes[selected]}</p>
+      <p>has {votes[selected]} votes</p>
 
+      <button onClick={vote}>vote</button>
       <button onClick={randomize}>next anecdote</button>
     </div>
   );
