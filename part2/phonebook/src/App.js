@@ -52,13 +52,16 @@ const Filter = ({ filter, setFilter }) => (
 const Persons = ({ persons, onRemoved }) =>
   persons.map((p) => <Person {...p} key={p.name} onRemoved={onRemoved} />);
 
-const Notification = ({ message }) => {
+const Notification = ({ message, isGood }) => {
+  const color = isGood ? "green" : "red";
   const style = {
-    borderColor: "green",
+    borderColor: color,
     borderWidth: "3px",
     borderStyle: "solid",
     background: "grey",
     margin: "1em",
+    color,
+    padding: "0.3em",
   };
   return <div style={style}>{message}</div>;
 };
@@ -72,8 +75,8 @@ const App = () => {
     fetchAll().then((p) => setPersons(p));
   }, []);
 
-  const displayMsg = (msg) => {
-    setMessage(msg);
+  const displayMsg = (msg, isGood) => {
+    setMessage({ message: msg, isGood });
     setTimeout(() => setMessage(null), 5000);
   };
 
@@ -85,22 +88,30 @@ const App = () => {
         return;
       }
       newPerson.id = existing.id;
-      newPersonServer = await overwrite(newPerson);
-      setPersons((old) =>
-        old.map((p) => (p.id === newPersonServer.id ? newPersonServer : p))
-      );
-      displayMsg(`Updated ${newPersonServer.name}`);
+      try {
+        newPersonServer = await overwrite(newPerson);
+        setPersons((old) =>
+          old.map((p) => (p.id === newPersonServer.id ? newPersonServer : p))
+        );
+        displayMsg(`Updated ${newPersonServer.name}`, true);
+      } catch (err) {
+        displayMsg(`Updating person ${newPerson.id} failed`, false);
+      }
     } else {
       newPersonServer = await add(newPerson);
       setPersons(persons.concat(newPersonServer));
-      displayMsg(`Added ${newPersonServer.name}`);
+      displayMsg(`Added ${newPersonServer.name}`, true);
     }
     console.log({ newPerson, newPersonServer });
   };
 
   const onRemoved = async (id) => {
-    await remove(id);
-    setPersons((old) => old.filter((p) => p.id !== id));
+    try {
+      await remove(id);
+      setPersons((old) => old.filter((p) => p.id !== id));
+    } catch (err) {
+      displayMsg(`Removing person ${id} failed`, false);
+    }
   };
 
   const displayed = persons.filter(({ name }) =>
@@ -110,7 +121,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {message ? <Notification message={message} /> : null}
+      {message ? <Notification {...message} /> : null}
       <PersonForm onPersonCreated={handleAdd} />
       <h2>Numbers</h2>
       <Filter filter={filter} setFilter={setFilter} />
