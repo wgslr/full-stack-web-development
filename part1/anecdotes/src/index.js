@@ -3,8 +3,21 @@ import ReactDOM from "react-dom";
 
 const App = (props) => {
   const [selected, setSelected] = useState(0);
+  const length = props.anecdotes.length;
 
-  return <div>{props.anecdotes[selected]}</div>;
+  const randomize = () => {
+    const newNumber = Math.floor(Math.random() * length);
+    console.log({ newNumber });
+    setSelected(newNumber);
+  };
+
+  return (
+    <div>
+      <p>{props.anecdotes[selected]}</p>
+
+      <button onClick={randomize}>next anecdote</button>
+    </div>
+  );
 };
 
 const anecdotes = [
