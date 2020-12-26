@@ -27,7 +27,7 @@ let persons = [
 ];
 
 app.get("/api/persons", (req, resp) => {
-  resp.json(persons);
+  return resp.json(persons);
 });
 
 app.get("/info", (req, resp) => {
@@ -38,6 +38,17 @@ app.get("/info", (req, resp) => {
 <p>${new Date()}</p>
 </body>
 </html>`);
+});
+
+app.get("/api/persons/:id", (req, resp) => {
+  const id = Number(req.params.id);
+  const found = persons.find((p) => p.id === id);
+
+  if (!found) {
+    return resp.status(404).end();
+  }
+
+  return resp.json(found);
 });
 
 app.listen(PORT, () => {
