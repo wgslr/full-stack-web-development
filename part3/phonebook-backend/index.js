@@ -4,9 +4,15 @@ const morgan = require("morgan");
 const PORT = 3001;
 const MAX_ID = 1e9;
 
+morgan.token("body", (req, resp) =>
+  req.method == "POST" ? JSON.stringify(req.body) : ""
+);
+
 const app = express();
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 let persons = [
   {
