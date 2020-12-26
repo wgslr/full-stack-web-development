@@ -51,6 +51,17 @@ app.get("/api/persons/:id", (req, resp) => {
   return resp.json(found);
 });
 
+app.delete("/api/persons/:id", (req, resp) => {
+  const id = Number(req.params.id);
+  const oldLength = persons.length;
+  persons = persons.filter((p) => p.id !== id);
+  if (persons.length != oldLength) {
+    console.log(`Removed person with id ${id}`);
+  } else {
+    return resp.status(404).end();
+  }
+});
+
 app.listen(PORT, () => {
   console.log("Server running at " + PORT);
 });
