@@ -33,6 +33,10 @@ const generateId = () => {
   return Math.floor(Math.random() * MAX_ID);
 };
 
+const findByName = (name) => {
+  return persons.find((p) => p.name == name) || null;
+};
+
 app.get("/api/persons", (req, resp) => {
   return resp.json(persons);
 });
@@ -63,6 +67,17 @@ app.post("/api/persons", (req, resp) => {
   if (!body) {
     return resp.status(400).json({ error: "empty payload" });
   }
+
+  if (!body.name) {
+    return resp.status(400).json({ error: "name missing" });
+  }
+  if (!body.number) {
+    return resp.status(400).json({ error: "number missing" });
+  }
+  if (findByName(body.name)) {
+    return resp.status(409).json({ error: "name must be unique" });
+  }
+
   const id = generateId();
   const newPerson = {
     id,
