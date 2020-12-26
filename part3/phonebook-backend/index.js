@@ -1,7 +1,10 @@
 const express = require("express");
 
 const PORT = 3001;
+const MAX_ID = 1e9;
+
 const app = express();
+app.use(express.json());
 
 let persons = [
   {
@@ -26,6 +29,10 @@ let persons = [
   },
 ];
 
+const generateId = () => {
+  return Math.floor(Math.random() * MAX_ID);
+};
+
 app.get("/api/persons", (req, resp) => {
   return resp.json(persons);
 });
@@ -49,6 +56,22 @@ app.get("/api/persons/:id", (req, resp) => {
   }
 
   return resp.json(found);
+});
+
+app.post("/api/persons", (req, resp) => {
+  const body = req.body;
+  if (!body) {
+    return resp.status(400).json({ error: "empty payload" });
+  }
+  const id = generateId();
+  const newPerson = {
+    id,
+    name: body.name,
+    number: body.number,
+  };
+  persons.push(newPerson);
+  console.log("Created a new person:", newPerson);
+  return resp.status(201).json(newPerson);
 });
 
 app.delete("/api/persons/:id", (req, resp) => {
