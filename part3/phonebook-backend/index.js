@@ -20,35 +20,8 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
-let persons = [
-  {
-    name: "Arto Hellas",
-    number: "040-123456",
-    id: 1,
-  },
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2,
-  },
-  {
-    name: "Dan Abramov",
-    number: "12-43-234345",
-    id: 3,
-  },
-  {
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-    id: 4,
-  },
-];
-
-const generateId = () => {
-  return Math.floor(Math.random() * MAX_ID);
-};
-
-const findByName = (name) => {
-  return persons.find((p) => p.name == name) || null;
+const findByName = async (name) => {
+  return await Person.findOne({ name });
 };
 
 app.get("/api/persons", (req, resp) => {
@@ -90,7 +63,7 @@ app.post("/api/persons", async (req, resp) => {
   if (!body.number) {
     return resp.status(400).json({ error: "number missing" });
   }
-  if (findByName(body.name)) {
+  if (await findByName(body.name)) {
     return resp.status(409).json({ error: "name must be unique" });
   }
 
@@ -98,11 +71,9 @@ app.post("/api/persons", async (req, resp) => {
     name: body.name,
     number: body.number,
   });
-
   try {
     const savedPerson = await newPerson.save();
     console.log("Created a new person:", savedPerson);
-    persons.push(savedPerson);
     return resp.status(201).json(savedPerson);
   } catch (err) {
     console.error("Creating a new person failed:", err);
