@@ -40,15 +40,15 @@ app.get("/info", (req, resp) => {
 </html>`);
 });
 
-app.get("/api/persons/:id", (req, resp) => {
-  const id = Number(req.params.id);
-  const found = persons.find((p) => p.id === id);
+app.get("/api/persons/:id", async (req, resp) => {
+  const id = req.params.id;
+  const found = await Person.findById(id);
 
-  if (!found) {
-    return resp.status(404).end();
+  if (found) {
+    resp.json(found);
+  } else {
+    resp.status(404).end();
   }
-
-  return resp.json(found);
 });
 
 app.post("/api/persons", async (req, resp) => {
