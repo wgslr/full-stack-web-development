@@ -1,6 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+
+const Person = require("./models/person");
 
 const PORT = process.env.PORT || 3001;
 const MAX_ID = 1e9;
@@ -49,7 +52,9 @@ const findByName = (name) => {
 };
 
 app.get("/api/persons", (req, resp) => {
-  return resp.json(persons);
+  Person.find({}).then((persons) => {
+    resp.json(persons);
+  });
 });
 
 app.get("/info", (req, resp) => {
