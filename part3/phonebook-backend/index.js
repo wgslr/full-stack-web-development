@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const MAX_ID = 1e9;
 
 morgan.token("body", (req, resp) =>
