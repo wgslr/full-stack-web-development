@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { overwrite, fetchAll, remove, add } from "./services/persons";
 
 const Person = ({ id, name, number, onRemoved }) => {
@@ -98,9 +97,13 @@ const App = () => {
         displayMsg(`Updating person ${newPerson.id} failed`, false);
       }
     } else {
-      newPersonServer = await add(newPerson);
-      setPersons(persons.concat(newPersonServer));
-      displayMsg(`Added ${newPersonServer.name}`, true);
+      try {
+        newPersonServer = await add(newPerson);
+        setPersons(persons.concat(newPersonServer));
+        displayMsg(`Added ${newPersonServer.name}`, true);
+      } catch (err) {
+        displayMsg(`Failed adding person: ${err}`, false);
+      }
     }
     console.log({ newPerson, newPersonServer });
   };
