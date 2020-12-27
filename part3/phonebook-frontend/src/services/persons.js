@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL_PREFIX = "/api/";
+const API_URL_PREFIX = "/api";
 
 export const fetchAll = () =>
   axios.get(API_URL_PREFIX + "/persons").then((resp) => resp.data);
