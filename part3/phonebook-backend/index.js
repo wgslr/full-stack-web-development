@@ -78,7 +78,7 @@ app.get("/api/persons/:id", (req, resp) => {
   return resp.json(found);
 });
 
-app.post("/api/persons", (req, resp) => {
+app.post("/api/persons", async (req, resp) => {
   const body = req.body;
   if (!body) {
     return resp.status(400).json({ error: "empty payload" });
@@ -94,15 +94,20 @@ app.post("/api/persons", (req, resp) => {
     return resp.status(409).json({ error: "name must be unique" });
   }
 
-  const id = generateId();
-  const newPerson = {
-    id,
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-  };
-  persons.push(newPerson);
-  console.log("Created a new person:", newPerson);
-  return resp.status(201).json(newPerson);
+  });
+
+  try {
+    const savedPerson = await newPerson.save();
+    console.log("Created a new person:", savedPerson);
+    persons.push(savedPerson);
+    return resp.status(201).json(savedPerson);
+  } catch (err) {
+    console.error("Creating a new person failed:", err);
+    return resp.status(500);
+  }
 });
 
 app.delete("/api/persons/:id", (req, resp) => {
