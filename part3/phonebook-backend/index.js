@@ -106,6 +106,7 @@ app.delete("/api/persons/:id", (req, resp) => {
   } else {
     return resp.status(404).end();
   }
+  resp.status(204).end();
 });
 
 app.listen(PORT, () => {
