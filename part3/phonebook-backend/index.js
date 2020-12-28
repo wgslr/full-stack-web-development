@@ -106,6 +106,8 @@ app.put("/api/persons/:id", async (req, resp, next) => {
     const person = { name, number };
     const updated = await Person.findByIdAndUpdate(req.params.id, person, {
       new: true,
+      context: "query",
+      runValidators: true,
     });
     if (updated) resp.json(updated);
     else resp.status(404).end();
