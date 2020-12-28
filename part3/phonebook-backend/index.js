@@ -31,14 +31,19 @@ app.get("/api/persons", (req, resp) => {
   });
 });
 
-app.get("/info", (req, resp) => {
-  resp.send(`<!DOCTYPE html/>
+app.get("/info", async (req, resp, next) => {
+  try {
+    const personCount = await Person.count();
+    resp.send(`<!DOCTYPE html/>
 <html>
 <body>
-<p>Phonebook has info for ${persons.length} people</p>
+<p>Phonebook has info for ${personCount} people</p>
 <p>${new Date()}</p>
 </body>
 </html>`);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get("/api/persons/:id", async (req, resp, next) => {
