@@ -4,13 +4,11 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const Person = require("./models/person");
-const { response } = require("express");
 
 const PORT = process.env.PORT || 3001;
-const MAX_ID = 1e9;
 
-morgan.token("body", (req, resp) =>
-  req.method == "POST" ? JSON.stringify(req.body) : ""
+morgan.token("body", (req) =>
+  req.method === "POST" ? JSON.stringify(req.body) : ""
 );
 
 const app = express();
