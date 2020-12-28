@@ -40,48 +40,51 @@ app.get("/info", (req, resp) => {
 </html>`);
 });
 
-app.get("/api/persons/:id", async (req, resp) => {
-  const id = req.params.id;
-  const found = await Person.findById(id);
+app.get("/api/persons/:id", async (req, resp, next) => {
+  try {
+    const id = req.params.id;
+    const found = await Person.findById(id);
 
-  if (found) {
-    resp.json(found);
-  } else {
-    resp.status(404).end();
+    if (found) {
+      resp.json(found);
+    } else {
+      resp.status(404).end();
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
-app.post("/api/persons", async (req, resp) => {
-  const body = req.body;
-  if (!body) {
-    return resp.status(400).json({ error: "empty payload" });
-  }
-
-  if (!body.name) {
-    return resp.status(400).json({ error: "name missing" });
-  }
-  if (!body.number) {
-    return resp.status(400).json({ error: "number missing" });
-  }
-  if (await findByName(body.name)) {
-    return resp.status(409).json({ error: "name must be unique" });
-  }
-
-  const newPerson = new Person({
-    name: body.name,
-    number: body.number,
-  });
+app.post("/api/persons", async (req, resp, next) => {
   try {
+    const body = req.body;
+    if (!body) {
+      return resp.status(400).json({ error: "empty payload" });
+    }
+
+    if (!body.name) {
+      return resp.status(400).json({ error: "name missing" });
+    }
+    if (!body.number) {
+      return resp.status(400).json({ error: "number missing" });
+    }
+    if (await findByName(body.name)) {
+      return resp.status(409).json({ error: "name must be unique" });
+    }
+
+    const newPerson = new Person({
+      name: body.name,
+      number: body.number,
+    });
     const savedPerson = await newPerson.save();
     console.log("Created a new person:", savedPerson);
     return resp.status(201).json(savedPerson);
   } catch (err) {
-    console.error("Creating a new person failed:", err);
-    return resp.status(500);
+    next(err);
   }
 });
 
-app.delete("/api/persons/:id", async (req, resp) => {
+app.delete("/api/persons/:id", async (req, resp, next) => {
   try {
     const id = req.params.id;
 
@@ -94,9 +97,20 @@ app.delete("/api/persons/:id", async (req, resp) => {
       resp.status(404).json({ error: "Person to be removed does not exist" });
     }
   } catch (err) {
-    resp.status(500).end();
+    next(err);
   }
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log("Server running at " + PORT);
