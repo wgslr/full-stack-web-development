@@ -21,10 +21,6 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
-const findByName = async (name) => {
-  return await Person.findOne({ name });
-};
-
 app.get("/api/persons", (req, resp) => {
   Person.find({}).then((persons) => {
     resp.json(persons);
@@ -74,9 +70,6 @@ app.post("/api/persons", async (req, resp, next) => {
     if (!body.number) {
       return resp.status(400).json({ error: "number missing" });
     }
-    if (await findByName(body.name)) {
-      return resp.status(409).json({ error: "name must be unique" });
-    }
 
     const newPerson = new Person({
       name: body.name,
@@ -125,6 +118,8 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
