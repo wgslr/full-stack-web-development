@@ -57,7 +57,7 @@ const Notification = ({ message, isGood }) => {
     borderColor: color,
     borderWidth: "3px",
     borderStyle: "solid",
-    background: "grey",
+    background: "#d2d2d2",
     margin: "1em",
     color,
     padding: "0.3em",
@@ -94,7 +94,11 @@ const App = () => {
         );
         displayMsg(`Updated ${newPersonServer.name}`, true);
       } catch (err) {
-        displayMsg(`Updating person ${newPerson.id} failed`, false);
+        console.error(err);
+        displayMsg(
+          `Updating person ${newPerson.id} failed: ${err.response.data.error}`,
+          false
+        );
       }
     } else {
       try {
@@ -102,7 +106,8 @@ const App = () => {
         setPersons(persons.concat(newPersonServer));
         displayMsg(`Added ${newPersonServer.name}`, true);
       } catch (err) {
-        displayMsg(`Failed adding person: ${err}`, false);
+        console.error(err);
+        displayMsg(`Adding person failed: ${err.response.data.error}`, false);
       }
     }
     console.log({ newPerson, newPersonServer });
@@ -113,7 +118,11 @@ const App = () => {
       await remove(id);
       setPersons((old) => old.filter((p) => p.id !== id));
     } catch (err) {
-      displayMsg(`Removing person ${id} failed`, false);
+      console.error(err);
+      displayMsg(
+        `Removing person ${id} failed: ${err.response.data.error}`,
+        false
+      );
     }
   };
 
