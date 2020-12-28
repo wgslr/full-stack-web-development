@@ -3,6 +3,8 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 const DB_URI = process.env.MONGO_URI;
 
+console.log("Connecting to", DB_URI);
+
 mongoose
   .connect(DB_URI, {
     useNewUrlParser: true,
