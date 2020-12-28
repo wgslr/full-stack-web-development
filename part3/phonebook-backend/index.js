@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const Person = require("./models/person");
+const { response } = require("express");
 
 const PORT = process.env.PORT || 3001;
 const MAX_ID = 1e9;
@@ -96,6 +97,20 @@ app.delete("/api/persons/:id", async (req, resp, next) => {
       console.log("Person to be removed not found");
       resp.status(404).json({ error: "Person to be removed does not exist" });
     }
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put("/api/persons/:id", async (req, resp, next) => {
+  try {
+    const { name, number } = req.body;
+    const person = { name, number };
+    const updated = await Person.findByIdAndUpdate(req.params.id, person, {
+      new: true,
+    });
+    if (updated) resp.json(updated);
+    else resp.status(404).end();
   } catch (err) {
     next(err);
   }
