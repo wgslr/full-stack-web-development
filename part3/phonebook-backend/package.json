@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "cd ../phonebook-frontend && npm run build && cp -a build ../phonebook-backend/",
     "deploy": "cd ../.. && git subtree push --prefix part3/phonebook-backend/ heroku master",
+    "deploy:force": "cd ../.. && git push heroku $(git subtree split --prefix part3/phonebook-backend/):master --force",
     "deploy:full": "npm run build:ui && git add . && git commit -m 'ui build' && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "lint": "eslint ."
