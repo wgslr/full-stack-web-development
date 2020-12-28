@@ -81,16 +81,21 @@ app.post("/api/persons", async (req, resp) => {
   }
 });
 
-app.delete("/api/persons/:id", (req, resp) => {
-  const id = Number(req.params.id);
-  const oldLength = persons.length;
-  persons = persons.filter((p) => p.id !== id);
-  if (persons.length != oldLength) {
-    console.log(`Removed person with id ${id}`);
-  } else {
-    return resp.status(404).end();
+app.delete("/api/persons/:id", async (req, resp) => {
+  try {
+    const id = req.params.id;
+
+    const result = await Person.findByIdAndDelete(id);
+    if (result) {
+      console.log(`Removed person with id ${id}`);
+      resp.status(204).end();
+    } else {
+      console.log("Person to be removed not found");
+      resp.status(404).json({ error: "Person to be removed does not exist" });
+    }
+  } catch (err) {
+    resp.status(500).end();
   }
-  resp.status(204).end();
 });
 
 app.listen(PORT, () => {
