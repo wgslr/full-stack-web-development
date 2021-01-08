@@ -76,6 +76,30 @@ test("likes number default is 0", async () => {
   expect(createdBlog.likes).toBe(0);
 });
 
+test("title is a required property", async () => {
+  const body = {
+    author: "Some author",
+    url: "/some-url",
+  };
+  await api.post("/api/blogs").send(body).expect(400);
+
+  expect(await helper.getAllBlogsFromDb()).toHaveLength(
+    helper.initialBlogs.length
+  );
+});
+
+test("author is a required property", async () => {
+  const body = {
+    title: "Some title",
+    url: "/some-url",
+  };
+  await api.post("/api/blogs").send(body).expect(400);
+
+  expect(await helper.getAllBlogsFromDb()).toHaveLength(
+    helper.initialBlogs.length
+  );
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
