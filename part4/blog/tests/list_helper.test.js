@@ -16,7 +16,7 @@ const listWithThreeBlogs = [
   {
     _id: "6a422aa71b54a676234d17f8",
     title: "Some blog",
-    author: "Blog author",
+    author: "William Shakespeare",
     url:
       "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
     likes: 5,
@@ -80,5 +80,22 @@ describe("favorite blog", () => {
   test("blog with most likes is favorite", () => {
     const result = listHelper.favoriteBlog(listWithThreeBlogs);
     expect(result).toEqual(listWithThreeBlogs[1]);
+  });
+});
+
+describe("most blogs author", () => {
+  test("of empty list is null", () => {
+    const result = listHelper.mostBlogs([]);
+    expect(result).toBe(null);
+  });
+
+  test("of one blog is its author", () => {
+    const result = listHelper.mostBlogs(listWithOneBlog);
+    expect(result).toEqual({ author: "Edsger W. Dijkstra", blogs: 1 });
+  });
+
+  test("of many blogs is the most productive author", () => {
+    const result = listHelper.mostBlogs(listWithThreeBlogs);
+    expect(result).toEqual({ author: "William Shakespeare", blogs: 2 });
   });
 });
