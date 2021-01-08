@@ -6,10 +6,12 @@ const totalLikes = (blogs) =>
   blogs.reduce((total, blog) => total + blog.likes, 0);
 
 const max = (list, keyExtractor = _.identity) =>
-  list.reduce(
-    (best, curr) => (keyExtractor(best) > keyExtractor(curr) ? best : curr),
-    list[0]
-  );
+  list.length === 0
+    ? null
+    : list.reduce(
+        (best, curr) => (keyExtractor(best) > keyExtractor(curr) ? best : curr),
+        list[0]
+      );
 
 const favoriteBlog = (blogs) => {
   if (blogs.length === 0) {
@@ -30,9 +32,22 @@ const mostBlogs = (blogs) => {
   return max(authors, (x) => x.blogs);
 };
 
+const mostLikes = (blogs) => {
+  const authorsMap = {};
+  blogs.forEach((blog) => {
+    authorsMap[blog.author] = (authorsMap[blog.author] || 0) + blog.likes;
+  });
+  const authors = Object.entries(authorsMap).map((c) => ({
+    author: c[0],
+    likes: c[1],
+  }));
+  return max(authors, (a) => a.likes);
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };

@@ -37,7 +37,7 @@ const listWithThreeBlogs = [
     author: "Edsger W. Dijkstra",
     url:
       "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 0,
+    likes: 20,
     __v: 0,
   },
 ];
@@ -62,7 +62,7 @@ describe("total likes", () => {
 
   test("of bigger list is calculated right", () => {
     const result = listHelper.totalLikes(listWithThreeBlogs);
-    expect(result).toBe(11);
+    expect(result).toBe(31);
   });
 });
 
@@ -79,7 +79,7 @@ describe("favorite blog", () => {
 
   test("blog with most likes is favorite", () => {
     const result = listHelper.favoriteBlog(listWithThreeBlogs);
-    expect(result).toEqual(listWithThreeBlogs[1]);
+    expect(result).toEqual(listWithThreeBlogs[2]);
   });
 });
 
@@ -97,5 +97,22 @@ describe("most blogs author", () => {
   test("of many blogs is the most productive author", () => {
     const result = listHelper.mostBlogs(listWithThreeBlogs);
     expect(result).toEqual({ author: "William Shakespeare", blogs: 2 });
+  });
+});
+
+describe("most liked author", () => {
+  test("of empty list is null", () => {
+    const result = listHelper.mostLikes([]);
+    expect(result).toBe(null);
+  });
+
+  test("of one blog is its author", () => {
+    const result = listHelper.mostLikes(listWithOneBlog);
+    expect(result).toEqual({ author: "Edsger W. Dijkstra", likes: 5 });
+  });
+
+  test("of many blogs is computed correctly", () => {
+    const result = listHelper.mostLikes(listWithThreeBlogs);
+    expect(result).toEqual({ author: "Edsger W. Dijkstra", likes: 20 });
   });
 });
