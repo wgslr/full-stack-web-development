@@ -44,7 +44,7 @@ const authenticateRequest = async (req) => {
   if (!auth) {
     throw new Error(`Authorization header missing`);
   }
-  if (!auth.startsWith("Bearer ")) {
+  if (!auth.toLowerCase().startsWith("bearer ")) {
     throw new Error(`Incorrect authorization type: ${auth}`);
   }
   const token = auth.split(" ")[1];
