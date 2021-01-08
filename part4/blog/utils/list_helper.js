@@ -1,4 +1,4 @@
-const dummy = (blogs) => 1;
+const dummy = (_blogs) => 1;
 
 module.exports = {
   dummy,
