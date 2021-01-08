@@ -2,13 +2,22 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const helper = require("./blog_helper");
+const userHelper = require("./user_helper");
 
 const api = supertest(app);
+let root = undefined;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  await Promise.all(helper.initialBlogs.map((blog) => new Blog(blog).save()));
+  await User.deleteMany({});
+  root = await userHelper.addUser("root", "rootpassword");
+  await Promise.all(
+    helper.initialBlogs.map((blog) =>
+      new Blog({ ...blog, user: root._id }).save()
+    )
+  );
 });
 
 test("blogs are returned as json", async () => {
@@ -47,11 +56,11 @@ test("post creates a blog post", async () => {
     .expect(201);
   const createdBlog = response.body;
 
-  // prepare object for comparison
-  const stripped = Object.assign({}, createdBlog);
-  delete stripped.id;
-
-  expect(stripped).toEqual(body);
+  expect(createdBlog).toEqual({
+    ...body,
+    id: expect.any(String),
+    user: expect.any(String),
+  });
   expect(await helper.getAllBlogsFromDb()).toHaveLength(
     helper.initialBlogs.length + 1
   );

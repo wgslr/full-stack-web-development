@@ -20,7 +20,6 @@ blogsRouter.post("/", async (request, response) => {
 
   args.likes = args.likes ?? 0;
   const creator = await User.findOne({});
-  logger.debug({ creator });
   args.user = creator._id;
 
   const blog = new Blog(args);
