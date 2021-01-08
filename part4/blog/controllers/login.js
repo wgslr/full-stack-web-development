@@ -8,15 +8,16 @@ const logger = require("../utils/logger");
 loginRouter.post("/", async (request, response) => {
   try {
     const { username, password } = request.body;
-    const { token, user } = await auth.authenticate(username, password);
-    logger.debug({ token, user });
+    const { token, user } = await auth.authenticateWithPassword(
+      username,
+      password
+    );
     return response
       .status(200)
       .json({ token, username: user.username, name: user.name });
   } catch (error) {
-    logger.info("Authentication error", error);
     return response.status(401).json({
-      error: "invalid username or password",
+      error: error.message,
     });
   }
 });

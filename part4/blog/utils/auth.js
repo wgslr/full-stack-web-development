@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const config = require("./config");
 
-const authenticate = async (username, password) => {
+const authenticateWithPassword = async (username, password) => {
   /**
    * Returnes a JWT token if authentication succeeds, throws otherwise.
    */
@@ -38,4 +38,4 @@ const verifyToken = async (token) => {
   return user;
 };
 
-module.exports = { authenticate, verifyToken };
+module.exports = { authenticateWithPassword, verifyToken };

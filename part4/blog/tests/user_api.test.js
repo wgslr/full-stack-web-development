@@ -2,14 +2,42 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const User = require("../models/user");
+const auth = require("../utils/auth");
 const helper = require("./user_helper");
 
 const api = supertest(app);
 
+const USERNAME = "root";
+const PASSWORD = "somepassword";
+
 describe("when there is initially one user in db", () => {
   beforeEach(async () => {
     await User.deleteMany({});
-    await helper.addUser("root", "somepassword");
+    await helper.addUser(USERNAME, PASSWORD);
+  });
+
+  test("user can log in with correct password", async () => {
+    const response = await api
+      .post("/api/login")
+      .send({
+        username: USERNAME,
+        password: PASSWORD,
+      })
+      .expect("Content-Type", /json/);
+    expect(200);
+    const { token, username } = response.body;
+
+    expect(auth.verifyToken(token)).toBeTruthy();
+  });
+
+  test("user can't log in with incorrect password", async () => {
+    await api
+      .post("/api/login")
+      .send({
+        username: USERNAME,
+        password: "wrongpassword",
+      })
+      .expect(401);
   });
 
   test("post creates a user", async () => {
