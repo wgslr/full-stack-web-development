@@ -24,6 +24,9 @@ const initialBlogs = [
   },
 ];
 
+const getAllBlogsFromDb = async () => await Blog.find({});
+
 module.exports = {
   initialBlogs,
+  getAllBlogsFromDb,
 };

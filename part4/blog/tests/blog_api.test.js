@@ -33,6 +33,30 @@ test("all blogs have id property", async () => {
   });
 });
 
+test("post creates a blog post", async () => {
+  const body = {
+    title: "New blog",
+    author: "Some author",
+    url: "/some-url",
+    likes: 0,
+  };
+  const response = await api
+    .post("/api/blogs")
+    .send(body)
+    .expect("Content-Type", /json/)
+    .expect(201);
+  const createdBlog = response.body;
+
+  // prepare object for comparison
+  const stripped = Object.assign({}, createdBlog);
+  delete stripped.id;
+
+  expect(stripped).toEqual(body);
+  expect(await helper.getAllBlogsFromDb()).toHaveLength(
+    helper.initialBlogs.length + 1
+  );
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
