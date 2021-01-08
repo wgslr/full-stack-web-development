@@ -11,19 +11,29 @@ usersRouter.get("/", async (req, resp) => {
 
 usersRouter.post("/", async (req, resp) => {
   const body = req.body;
+  const { username, password, name } = body;
+
+  if (username.length < 3 || password.length < 3) {
+    resp
+      .status(400)
+      .json({ error: "Name and password must be at least 3 characters long" });
+    return;
+  }
 
   const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(body.password, saltRounds);
+  const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  const user = new User({
-    username: body.username,
-    name: body.name,
-    passwordHash,
-  });
-
-  const savedUser = await user.save();
-
-  resp.json(savedUser);
+  try {
+    const user = new User({ username, name, passwordHash });
+    const savedUser = await user.save();
+    resp.json(savedUser);
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      return resp.status(400).json({ error: error.message });
+    } else {
+      throw error;
+    }
+  }
 });
 
 module.exports = usersRouter;
