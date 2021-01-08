@@ -38,7 +38,7 @@ test("post creates a blog post", async () => {
     title: "New blog",
     author: "Some author",
     url: "/some-url",
-    likes: 0,
+    likes: 2,
   };
   const response = await api
     .post("/api/blogs")
@@ -55,6 +55,25 @@ test("post creates a blog post", async () => {
   expect(await helper.getAllBlogsFromDb()).toHaveLength(
     helper.initialBlogs.length + 1
   );
+});
+
+test("likes number default is 0", async () => {
+  const body = {
+    title: "New blog",
+    author: "Some author",
+    url: "/some-url",
+  };
+  const response = await api
+    .post("/api/blogs")
+    .send(body)
+    .expect("Content-Type", /json/)
+    .expect(201);
+  const createdBlog = response.body;
+
+  expect(await helper.getAllBlogsFromDb()).toHaveLength(
+    helper.initialBlogs.length + 1
+  );
+  expect(createdBlog.likes).toBe(0);
 });
 
 afterAll(() => {
