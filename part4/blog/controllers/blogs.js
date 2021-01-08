@@ -2,6 +2,7 @@ const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const logger = require("../utils/logger");
+const auth = require("../utils/auth");
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", {
@@ -13,6 +14,7 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", async (request, response) => {
+  let client;
   const args = request.body;
 
   if (!args["title"] || !args["author"]) {
@@ -20,15 +22,22 @@ blogsRouter.post("/", async (request, response) => {
     return;
   }
 
+  try {
+    client = await auth.authenticateRequest(request);
+  } catch (error) {
+    logger.debug("caught", { error });
+    response.status(401).json({ error: error.message });
+    return;
+  }
+
   args.likes = args.likes ?? 0;
-  const creator = await User.findOne({});
-  args.user = creator._id;
+  args.user = client._id;
 
   const blog = new Blog(args);
 
   const saved = await blog.save();
-  creator.blogs.push(saved._id);
-  await creator.save();
+  client.blogs.push(saved._id);
+  await client.save();
   response.status(201).json(saved);
 });
 

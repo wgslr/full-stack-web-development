@@ -38,4 +38,17 @@ const verifyToken = async (token) => {
   return user;
 };
 
-module.exports = { authenticateWithPassword, verifyToken };
+const authenticateRequest = async (req) => {
+  console.log(req.headers);
+  const auth = req.header("Authorization");
+  if (!auth) {
+    throw new Error(`Authorization header missing`);
+  }
+  if (!auth.startsWith("Bearer ")) {
+    throw new Error(`Incorrect authorization type: ${auth}`);
+  }
+  const token = auth.split(" ")[1];
+  return verifyToken(token);
+};
+
+module.exports = { authenticateWithPassword, verifyToken, authenticateRequest };

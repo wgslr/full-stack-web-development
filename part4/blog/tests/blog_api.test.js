@@ -5,14 +5,18 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 const helper = require("./blog_helper");
 const userHelper = require("./user_helper");
+const auth = require("../utils/auth");
 
 const api = supertest(app);
 let root = undefined;
+let rootToken;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await User.deleteMany({});
   root = await userHelper.addUser("root", "rootpassword");
+  rootToken = (await auth.authenticateWithPassword("root", "rootpassword"))
+    .token;
   await Promise.all(
     helper.initialBlogs.map((blog) =>
       new Blog({ ...blog, user: root._id }).save()
@@ -51,6 +55,7 @@ test("post creates a blog post", async () => {
   };
   const response = await api
     .post("/api/blogs")
+    .set("Authorization", `Bearer ${rootToken}`)
     .send(body)
     .expect("Content-Type", /json/)
     .expect(201);
@@ -74,9 +79,10 @@ test("likes number default is 0", async () => {
   };
   const response = await api
     .post("/api/blogs")
+    .set("Authorization", `Bearer ${rootToken}`)
     .send(body)
-    .expect("Content-Type", /json/)
-    .expect(201);
+    .expect(201)
+    .expect("Content-Type", /json/);
   const createdBlog = response.body;
 
   expect(await helper.getAllBlogsFromDb()).toHaveLength(
@@ -90,7 +96,11 @@ test("title is a required property", async () => {
     author: "Some author",
     url: "/some-url",
   };
-  await api.post("/api/blogs").send(body).expect(400);
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${rootToken}`)
+    .send(body)
+    .expect(400);
 
   expect(await helper.getAllBlogsFromDb()).toHaveLength(
     helper.initialBlogs.length
@@ -102,7 +112,11 @@ test("author is a required property", async () => {
     title: "Some title",
     url: "/some-url",
   };
-  await api.post("/api/blogs").send(body).expect(400);
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${rootToken}`)
+    .send(body)
+    .expect(400);
 
   expect(await helper.getAllBlogsFromDb()).toHaveLength(
     helper.initialBlogs.length
