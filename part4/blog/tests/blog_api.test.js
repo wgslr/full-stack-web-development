@@ -45,8 +45,21 @@ test("all blogs have id property", async () => {
     expect(b).not.toHaveProperty("_id");
   });
 });
+test("post without authentication doeas not create a blog post", async () => {
+  const body = {
+    title: "New blog",
+    author: "Some author",
+    url: "/some-url",
+    likes: 2,
+  };
+  await api.post("/api/blogs").send(body).expect(401);
 
-test("post creates a blog post", async () => {
+  expect(await helper.getAllBlogsFromDb()).toHaveLength(
+    helper.initialBlogs.length
+  );
+});
+
+test("authenticated post creates a blog post", async () => {
   const body = {
     title: "New blog",
     author: "Some author",

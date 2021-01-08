@@ -25,7 +25,6 @@ blogsRouter.post("/", async (request, response) => {
   try {
     client = await auth.verifyToken(request.token);
   } catch (error) {
-    logger.debug("caught", { error });
     response.status(401).json({ error: error.message });
     return;
   }
@@ -54,7 +53,6 @@ blogsRouter.delete("/:id", async (req, resp) => {
   const blog = await Blog.findById(id);
 
   if (blog) {
-    logger.debug({ blog });
     if (blog.user.toString() != client._id.toString()) {
       resp.status(403).end();
       return;
