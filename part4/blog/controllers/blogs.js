@@ -1,6 +1,7 @@
 const blogsRouter = require("express").Router();
 const { rawListeners } = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const logger = require("../utils/logger");
 
 blogsRouter.get("/", (request, response) => {
@@ -18,6 +19,9 @@ blogsRouter.post("/", async (request, response) => {
   }
 
   args.likes = args.likes ?? 0;
+  const creator = await User.findOne({});
+  logger.debug({ creator });
+  args.user = creator._id;
 
   const blog = new Blog(args);
 
