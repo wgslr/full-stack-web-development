@@ -13,7 +13,7 @@ usersRouter.post("/", async (req, resp) => {
   const body = req.body;
   const { username, password, name } = body;
 
-  if (username.length < 3 || password.length < 3) {
+  if (!(username && password && username.length >= 3 && password.length >= 3)) {
     resp
       .status(400)
       .json({ error: "Name and password must be at least 3 characters long" });
@@ -26,7 +26,7 @@ usersRouter.post("/", async (req, resp) => {
   try {
     const user = new User({ username, name, passwordHash });
     const savedUser = await user.save();
-    resp.json(savedUser);
+    resp.status(201).json(savedUser);
   } catch (error) {
     if (error.name === "ValidationError") {
       return resp.status(400).json({ error: error.message });
