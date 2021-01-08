@@ -23,6 +23,16 @@ test("all blogs are returned", async () => {
   expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
+test("all blogs have id property", async () => {
+  const response = await api.get("/api/blogs");
+  const blogs = response.body;
+  expect(blogs.length).toBeTruthy();
+  blogs.forEach((b) => {
+    expect(b).toHaveProperty("id");
+    expect(b).not.toHaveProperty("_id");
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
