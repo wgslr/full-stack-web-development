@@ -43,9 +43,23 @@ blogsRouter.post("/", async (request, response) => {
 
 blogsRouter.delete("/:id", async (req, resp) => {
   const id = req.params.id;
+  let client;
+  try {
+    client = await auth.verifyToken(req.token);
+  } catch (error) {
+    resp.status(401).json({ error: error.message });
+    return;
+  }
 
-  const result = await Blog.findByIdAndDelete(id);
-  if (result) {
+  const blog = await Blog.findById(id);
+
+  if (blog) {
+    logger.debug({ blog });
+    if (blog.user.toString() != client._id.toString()) {
+      resp.status(403).end();
+      return;
+    }
+
     logger.info(`Removed blog with id ${id}`);
     resp.status(204).end();
   } else {
