@@ -1,5 +1,47 @@
 const listHelper = require("../utils/list_helper");
 
+const listWithOneBlog = [
+  {
+    _id: "5a422aa71b54a676234d17f8",
+    title: "Go To Statement Considered Harmful",
+    author: "Edsger W. Dijkstra",
+    url:
+      "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 5,
+    __v: 0,
+  },
+];
+
+const listWithThreeBlogs = [
+  {
+    _id: "6a422aa71b54a676234d17f8",
+    title: "Some blog",
+    author: "Blog author",
+    url:
+      "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 5,
+    __v: 0,
+  },
+  {
+    _id: "7a422aa71b54a676234d17f8",
+    title: "Rome and Juliet",
+    author: "William Shakespeare",
+    url:
+      "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 6,
+    __v: 0,
+  },
+  {
+    _id: "5a422aa71b54a676234d17f8",
+    title: "Go To Statement Considered Harmful",
+    author: "Edsger W. Dijkstra",
+    url:
+      "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 0,
+    __v: 0,
+  },
+];
+
 test("dummy returns one", () => {
   const blogs = [];
 
@@ -8,48 +50,6 @@ test("dummy returns one", () => {
 });
 
 describe("total likes", () => {
-  const listWithOneBlog = [
-    {
-      _id: "5a422aa71b54a676234d17f8",
-      title: "Go To Statement Considered Harmful",
-      author: "Edsger W. Dijkstra",
-      url:
-        "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      likes: 5,
-      __v: 0,
-    },
-  ];
-
-  const listWithThreeBlogs = [
-    {
-      _id: "6a422aa71b54a676234d17f8",
-      title: "Some blog",
-      author: "Blog author",
-      url:
-        "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      likes: 5,
-      __v: 0,
-    },
-    {
-      _id: "7a422aa71b54a676234d17f8",
-      title: "Rome and Juliet",
-      author: "William Shakespeare",
-      url:
-        "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      likes: 6,
-      __v: 0,
-    },
-    {
-      _id: "5a422aa71b54a676234d17f8",
-      title: "Go To Statement Considered Harmful",
-      author: "Edsger W. Dijkstra",
-      url:
-        "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-      likes: 0,
-      __v: 0,
-    },
-  ];
-
   test("of empty list is zero", () => {
     const result = listHelper.totalLikes([]);
     expect(result).toBe(0);
@@ -63,5 +63,22 @@ describe("total likes", () => {
   test("of bigger list is calculated right", () => {
     const result = listHelper.totalLikes(listWithThreeBlogs);
     expect(result).toBe(11);
+  });
+});
+
+describe("favorite blog", () => {
+  test("of empty list is null", () => {
+    const result = listHelper.favoriteBlog([]);
+    expect(result).toBe(null);
+  });
+
+  test("when list has only one blog, it is favorite", () => {
+    const result = listHelper.favoriteBlog(listWithOneBlog);
+    expect(result).toEqual(listWithOneBlog[0]);
+  });
+
+  test("blog with most likes is favorite", () => {
+    const result = listHelper.favoriteBlog(listWithThreeBlogs);
+    expect(result).toEqual(listWithThreeBlogs[1]);
   });
 });
