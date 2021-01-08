@@ -39,7 +39,6 @@ const verifyToken = async (token) => {
 };
 
 const authenticateRequest = async (req) => {
-  console.log(req.headers);
   const auth = req.header("Authorization");
   if (!auth) {
     throw new Error(`Authorization header missing`);

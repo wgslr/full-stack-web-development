@@ -23,7 +23,7 @@ blogsRouter.post("/", async (request, response) => {
   }
 
   try {
-    client = await auth.authenticateRequest(request);
+    client = await auth.verifyToken(request.token);
   } catch (error) {
     logger.debug("caught", { error });
     response.status(401).json({ error: error.message });
