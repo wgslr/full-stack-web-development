@@ -6,6 +6,7 @@ import axios from "axios";
 import { usePersistedState } from "./hooks/usePersistedState";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -45,11 +46,13 @@ const App = () => {
             Logged in as {user.name}{" "}
             <button onClick={handleLogout}>Log out</button>
           </p>
-          <BlogForm
-            user={user}
-            onCreated={onBlogCreated}
-            onError={handleError}
-          />
+          <Togglable name={"Add blog"}>
+            <BlogForm
+              user={user}
+              onCreated={onBlogCreated}
+              onError={handleError}
+            />
+          </Togglable>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
