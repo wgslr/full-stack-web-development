@@ -21,6 +21,7 @@ const LoginForm = ({ onLoggedIn, onError }) => {
           <label>
             username{" "}
             <input
+              id="username"
               value={username}
               onChange={({ target }) => setUsername(target.value)}
               required
@@ -31,6 +32,7 @@ const LoginForm = ({ onLoggedIn, onError }) => {
           <label>
             password{" "}
             <input
+              id="password"
               value={password}
               type="password"
               onChange={({ target }) => setPassword(target.value)}
@@ -39,7 +41,7 @@ const LoginForm = ({ onLoggedIn, onError }) => {
           </label>
         </p>
         <p>
-          <input type="submit" value="Submit" />
+          <input id="login-button" type="submit" value="Submit" />
         </p>
       </form>
     </div>
