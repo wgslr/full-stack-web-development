@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import axios from "axios";
+import { usePersistedState } from "./hooks/usePersistedState";
 
 const logIn = async (username, password) => {
   // will throw on non-200 error code
@@ -62,13 +63,19 @@ const LoginForm = ({ onLoggedIn }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = usePersistedState("user", null);
+
+  console.log("local storage:", window.localStorage);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
-  const onLoggedIn = (userData) => setUser(userData);
+  const onLoggedIn = (userData) => {
+    // window.localStorage.setItem("user", JSON.stringify(userData));
+    // console.log("Updated local storage with", JSON.stringify(userData));
+    setUser(userData);
+  };
 
   return (
     <div>
