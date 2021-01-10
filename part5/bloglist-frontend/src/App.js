@@ -107,15 +107,17 @@ const App = () => {
           <Togglable name={"Add blog"} ref={formTogglableRef}>
             <BlogForm addBlog={addBlog} />
           </Togglable>
-          {sortBlogs(blogs).map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              handleLike={() => handleLike(blog)}
-              handleDelete={() => handleDelete(blog)}
-              canBeRemoved={blog.user && blog.user.id === user.id}
-            />
-          ))}
+          <article id="blog-list">
+            {sortBlogs(blogs).map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLike={() => handleLike(blog)}
+                handleDelete={() => handleDelete(blog)}
+                canBeRemoved={blog.user && blog.user.id === user.id}
+              />
+            ))}
+          </article>
         </>
       ) : (
         <LoginForm onLoggedIn={onLoggedIn} onError={handleError} />
