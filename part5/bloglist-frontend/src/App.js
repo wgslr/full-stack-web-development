@@ -15,6 +15,21 @@ const addBlogPost = async (data, user) => {
   return resp.data;
 };
 
+const likeBlog = async (blog) => {
+  const result = await axios.patch(`/api/blogs/${blog.id}`, {
+    likes: blog.likes + 1,
+  });
+  return {
+    ...blog,
+    likes: blog.likes + 1,
+  };
+};
+
+const updateInArray = (arr, oldobj, newobj, keyExtractor = (x) => x) => {
+  const needle = keyExtractor(oldobj);
+  return arr.map((x) => (keyExtractor(x) == needle ? newobj : x));
+};
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = usePersistedState("user", null);
@@ -50,6 +65,17 @@ const App = () => {
     }
   };
 
+  const handleLike = (blog) => {
+    console.log(`Liking blog ${blog.id} ${blog.title}`);
+    likeBlog(blog).then(
+      (updated) => {
+        setNotification(`Blog ${updated.title} liked`, true);
+        setBlogs((old) => updateInArray(old, blog, updated, (x) => x.id));
+      },
+      (failed) => setNotification(failed.message, false)
+    );
+  };
+
   return (
     <div>
       {notification && <Notification {...notification} />}
@@ -64,7 +90,11 @@ const App = () => {
             <BlogForm addBlog={addBlog} />
           </Togglable>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={() => handleLike(blog)}
+            />
           ))}
         </>
       ) : (
