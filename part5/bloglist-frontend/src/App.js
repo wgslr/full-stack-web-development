@@ -16,13 +16,19 @@ const addBlogPost = async (data, user) => {
 };
 
 const likeBlog = async (blog) => {
-  const result = await axios.patch(`/api/blogs/${blog.id}`, {
+  await axios.patch(`/api/blogs/${blog.id}`, {
     likes: blog.likes + 1,
   });
   return {
     ...blog,
     likes: blog.likes + 1,
   };
+};
+
+const deleteBlog = async (blog, user) => {
+  await axios.delete(`/api/blogs/${blog.id}`, {
+    headers: { Authorization: `Bearer ${user.token}` },
+  });
 };
 
 const updateInArray = (arr, oldobj, newobj, keyExtractor = (x) => x) => {
@@ -78,6 +84,16 @@ const App = () => {
     );
   };
 
+  const handleDelete = (blog) => {
+    deleteBlog(blog, user).then(
+      () => {
+        setBlogs((old) => old.filter((x) => x.id != blog.id));
+        setNotification(`Blog ${blog.id} ${blog.title} removed`, true);
+      },
+      (failed) => setNotification(failed.message, false)
+    );
+  };
+
   return (
     <div>
       {notification && <Notification {...notification} />}
@@ -96,6 +112,7 @@ const App = () => {
               key={blog.id}
               blog={blog}
               handleLike={() => handleLike(blog)}
+              handleDelete={() => handleDelete(blog)}
             />
           ))}
         </>

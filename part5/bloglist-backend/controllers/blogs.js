@@ -57,7 +57,7 @@ blogsRouter.delete("/:id", async (req, resp) => {
       resp.status(403).end();
       return;
     }
-
+    await blog.remove();
     logger.info(`Removed blog with id ${id}`);
     resp.status(204).end();
   } else {
