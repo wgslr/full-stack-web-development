@@ -4,6 +4,7 @@ import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
 import axios from "axios";
 import { usePersistedState } from "./hooks/usePersistedState";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -17,6 +18,9 @@ const App = () => {
 
   const onLoggedIn = (userData) => setUser(userData);
   const handleLogout = () => setUser(null);
+  const onBlogCreated = (created) => {
+    setBlogs((old) => old.concat(created));
+  };
 
   return (
     <div>
@@ -27,6 +31,7 @@ const App = () => {
             Logged in as {user.name}{" "}
             <button onClick={handleLogout}>Log out</button>
           </p>
+          <BlogForm user={user} onCreated={onBlogCreated} />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
