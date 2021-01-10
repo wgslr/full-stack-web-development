@@ -40,3 +40,26 @@ test("shows extended info", () => {
   expect(component.container).toHaveTextContent("/some/url");
   expect(component.container).toHaveTextContent("3 likes");
 });
+
+test("calls like handler", () => {
+  const blog = {
+    title: "Some title",
+    author: "The Author",
+    user: {
+      id: "123",
+    },
+    likes: 3,
+    url: "/some/url",
+  };
+
+  const mockLikeHandler = jest.fn();
+  const component = render(<Blog blog={blog} handleLike={mockLikeHandler} />);
+
+  const showButton = component.getByText("View");
+  fireEvent.click(showButton);
+  const likeButton = component.getByText("Like");
+  fireEvent.click(likeButton);
+  fireEvent.click(likeButton);
+
+  expect(mockLikeHandler.mock.calls).toHaveLength(2);
+});
