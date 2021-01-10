@@ -33,7 +33,7 @@ const deleteBlog = async (blog, user) => {
 
 const updateInArray = (arr, oldobj, newobj, keyExtractor = (x) => x) => {
   const needle = keyExtractor(oldobj);
-  return arr.map((x) => (keyExtractor(x) == needle ? newobj : x));
+  return arr.map((x) => (keyExtractor(x) === needle ? newobj : x));
 };
 
 const sortBlogs = (bs) => bs.sort((a, b) => b.likes - a.likes);
@@ -87,7 +87,7 @@ const App = () => {
   const handleDelete = (blog) => {
     deleteBlog(blog, user).then(
       () => {
-        setBlogs((old) => old.filter((x) => x.id != blog.id));
+        setBlogs((old) => old.filter((x) => x.id !== blog.id));
         setNotification(`Blog ${blog.id} ${blog.title} removed`, true);
       },
       (failed) => setNotification(failed.message, false)

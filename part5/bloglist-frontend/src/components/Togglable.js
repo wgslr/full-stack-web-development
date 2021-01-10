@@ -9,10 +9,12 @@ const Togglable = React.forwardRef(({ name, children }, ref) => {
 
   return (
     <div>
-      <button onClick={toggle}>{name ?? "Show"}</button>
+      <button onClick={toggle}>{name || "Show"}</button>
       {show && children}
     </div>
   );
 });
+
+Togglable.displayName = "Togglable";
 
 export default Togglable;

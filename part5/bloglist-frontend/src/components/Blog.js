@@ -1,6 +1,5 @@
 import React from "react";
 import Togglable from "./Togglable";
-import axios from "axios";
 
 const Blog = ({ blog, handleLike, handleDelete, canBeRemoved }) => (
   <div
