@@ -77,12 +77,19 @@ const App = () => {
     setUser(userData);
   };
 
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
     <div>
       <h2>blogs</h2>
       {user ? (
         <>
-          <p>Logged in as {user.name}</p>
+          <p>
+            Logged in as {user.name}{" "}
+            <button onClick={handleLogout}>Log out</button>
+          </p>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
