@@ -12,9 +12,10 @@ loginRouter.post("/", async (request, response) => {
       username,
       password
     );
+    logger.debug({ user });
     return response
       .status(200)
-      .json({ token, username: user.username, name: user.name });
+      .json({ token, username: user.username, name: user.name, id: user._id });
   } catch (error) {
     return response.status(401).json({
       error: error.message,

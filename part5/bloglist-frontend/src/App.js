@@ -113,6 +113,7 @@ const App = () => {
               blog={blog}
               handleLike={() => handleLike(blog)}
               handleDelete={() => handleDelete(blog)}
+              canBeRemoved={blog.user && blog.user.id === user.id}
             />
           ))}
         </>

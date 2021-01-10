@@ -6,6 +6,5 @@ export const logIn = async (username, password) => {
     username,
     password,
   });
-  const { name, token } = resp.data;
-  return { username, name, token };
+  return { username, ...resp.data };
 };

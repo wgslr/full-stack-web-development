@@ -2,7 +2,7 @@ import React from "react";
 import Togglable from "./Togglable";
 import axios from "axios";
 
-const Blog = ({ blog, handleLike, handleDelete }) => (
+const Blog = ({ blog, handleLike, handleDelete, canBeRemoved }) => (
   <div
     style={{
       border: "solid 1px black",
@@ -15,13 +15,15 @@ const Blog = ({ blog, handleLike, handleDelete }) => (
       <p>
         {blog.likes} <button onClick={handleLike}>Like</button>
       </p>
-      <button
-        onClick={() => {
-          window.confirm(`Delete blog ${blog.title}?`) && handleDelete();
-        }}
-      >
-        Remove
-      </button>
+      {canBeRemoved && (
+        <button
+          onClick={() => {
+            window.confirm(`Delete blog ${blog.title}?`) && handleDelete();
+          }}
+        >
+          Remove
+        </button>
+      )}
     </Togglable>
   </div>
 );
