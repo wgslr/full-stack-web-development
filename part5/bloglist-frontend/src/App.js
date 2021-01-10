@@ -30,6 +30,8 @@ const updateInArray = (arr, oldobj, newobj, keyExtractor = (x) => x) => {
   return arr.map((x) => (keyExtractor(x) == needle ? newobj : x));
 };
 
+const sortBlogs = (bs) => bs.sort((a, b) => b.likes - a.likes);
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = usePersistedState("user", null);
@@ -89,7 +91,7 @@ const App = () => {
           <Togglable name={"Add blog"} ref={formTogglableRef}>
             <BlogForm addBlog={addBlog} />
           </Togglable>
-          {blogs.map((blog) => (
+          {sortBlogs(blogs).map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
