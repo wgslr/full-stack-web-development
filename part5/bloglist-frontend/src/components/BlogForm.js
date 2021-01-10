@@ -1,33 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const addBlogPost = async (data, user) => {
-  const resp = await axios.post("/api/blogs", data, {
-    headers: { Authorization: `Bearer ${user.token}` },
-  });
-  return resp.data;
-};
-
-const BlogForm = ({ onCreated, onError, user }) => {
+const BlogForm = ({ addBlog }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const resetState = () => {
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
-    addBlogPost({ title, author, url }, user).then(
-      (created) => {
-        resetState();
-        onCreated(created);
-      },
-      (e) => onError(e.message)
-    );
+    addBlog({ title, author, url });
   };
 
   return (

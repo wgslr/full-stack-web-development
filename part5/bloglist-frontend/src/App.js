@@ -8,6 +8,13 @@ import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 
+const addBlogPost = async (data, user) => {
+  const resp = await axios.post("/api/blogs", data, {
+    headers: { Authorization: `Bearer ${user.token}` },
+  });
+  return resp.data;
+};
+
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = usePersistedState("user", null);
@@ -32,10 +39,15 @@ const App = () => {
   };
   const handleError = (message) => setNotification(message, false);
   const handleLogout = () => setUser(null);
-  const onBlogCreated = (created) => {
-    setBlogs((old) => old.concat(created));
-    setNotification(`Blog '${created.title}' created`, true);
-    formTogglableRef.current.toggle();
+  const addBlog = async (blogData) => {
+    try {
+      const created = await addBlogPost(blogData, user);
+      setBlogs((old) => old.concat(created));
+      setNotification(`Blog '${created.title}' created`, true);
+      formTogglableRef.current.toggle();
+    } catch (e) {
+      setNotification(e.message, false);
+    }
   };
 
   return (
@@ -49,11 +61,7 @@ const App = () => {
             <button onClick={handleLogout}>Log out</button>
           </p>
           <Togglable name={"Add blog"} ref={formTogglableRef}>
-            <BlogForm
-              user={user}
-              onCreated={onBlogCreated}
-              onError={handleError}
-            />
+            <BlogForm addBlog={addBlog} />
           </Togglable>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
