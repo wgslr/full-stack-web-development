@@ -12,7 +12,7 @@ const Blog = ({ blog, handleLike, handleDelete, canBeRemoved }) => (
     <Togglable name="View">
       <p>{blog.url}</p>
       <p>
-        {blog.likes} <button onClick={handleLike}>Like</button>
+        {blog.likes} likes <button onClick={handleLike}>Like</button>
       </p>
       {canBeRemoved && (
         <button
