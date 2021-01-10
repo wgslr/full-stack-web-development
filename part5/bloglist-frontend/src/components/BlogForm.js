@@ -23,8 +23,8 @@ const BlogForm = ({ onCreated, onError, user }) => {
     e.preventDefault();
     addBlogPost({ title, author, url }, user).then(
       (created) => {
-        onCreated(created);
         resetState();
+        onCreated(created);
       },
       (e) => onError(e.message)
     );
