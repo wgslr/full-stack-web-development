@@ -8,16 +8,25 @@ const addBlogPost = async (data, user) => {
   return resp.data;
 };
 
-const BlogForm = ({ onCreated, user }) => {
+const BlogForm = ({ onCreated, onError, user }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
+  const resetState = () => {
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     addBlogPost({ title, author, url }, user).then(
-      (created) => onCreated(created),
-      (e) => console.error(e)
+      (created) => {
+        onCreated(created);
+        resetState();
+      },
+      (e) => onError(e.message)
     );
   };
 

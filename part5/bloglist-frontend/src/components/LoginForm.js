@@ -1,8 +1,7 @@
 import { logIn } from "../services/auth.js";
 import React, { useState } from "react";
 
-const LoginForm = ({ onLoggedIn }) => {
-  const [error, setError] = useState(null);
+const LoginForm = ({ onLoggedIn, onError }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -12,13 +11,12 @@ const LoginForm = ({ onLoggedIn }) => {
       .then((userData) => {
         onLoggedIn(userData);
       })
-      .catch((e) => setError(e.message));
+      .catch((e) => onError(e.message));
   };
 
   return (
     <div>
       <form onSubmit={onSubmit}>
-        {error && <p>Error: {error}</p>}
         <p>
           <label>
             username{" "}
