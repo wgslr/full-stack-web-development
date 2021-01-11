@@ -34,16 +34,21 @@ const reducer = (state = initialState, action) => {
             }
           : a
       );
+    case "ADD":
+      return state.concat(asObject(action.data.content));
     default:
       return state;
   }
 };
 
-export const voteAction = (anecdoteId) => {
-  return {
-    type: "VOTE",
-    data: { anecdoteId },
-  };
-};
+export const voteAction = (anecdoteId) => ({
+  type: "VOTE",
+  data: { anecdoteId },
+});
+
+export const addAnecdote = (data) => ({
+  type: "ADD",
+  data,
+});
 
 export default reducer;

@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import AnecdoteForm from "./components/AnecdoteForm";
 import { voteAction } from "./reducers/anecdoteReducer";
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
   return (
     <div>
       <h2>Anecdotes</h2>
+
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
@@ -24,12 +26,7 @@ const App = () => {
         </div>
       ))}
       <h2>create new</h2>
-      <form>
-        <div>
-          <input />
-        </div>
-        <button>create</button>
-      </form>
+      <AnecdoteForm />
     </div>
   );
 };
