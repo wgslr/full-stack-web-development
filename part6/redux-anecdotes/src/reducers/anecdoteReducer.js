@@ -26,13 +26,13 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "VOTE":
       const { anecdoteId } = action.data;
-      return state.map((a) =>
-        a.id === anecdoteId
+      return state.map((oldAnecdote) =>
+        oldAnecdote.id === anecdoteId
           ? {
-              ...a,
-              votes: a.votes + 1,
+              ...oldAnecdote,
+              votes: oldAnecdote.votes + 1,
             }
-          : a
+          : oldAnecdote
       );
     case "ADD":
       return state.concat(asObject(action.data.content));
