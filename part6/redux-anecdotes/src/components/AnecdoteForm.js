@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { addAnecdoteAction } from "../reducers/anecdoteReducer";
 
@@ -11,12 +11,15 @@ const AnecdoteForm = (props) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input name="content" />
-        <input type="submit" />
-      </form>
-    </div>
+    <>
+      <h2>create new</h2>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <input name="content" />
+          <input type="submit" />
+        </form>
+      </div>
+    </>
   );
 };
 
