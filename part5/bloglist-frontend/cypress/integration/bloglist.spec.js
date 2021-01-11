@@ -70,5 +70,12 @@ describe("Blog app", function () {
       cy.contains("Like").click();
       cy.contains("4 likes");
     });
+
+    it("A blog can be removed", function () {
+      cy.contains("View").click();
+      cy.get("#blog-list").should("contain", "Old Blog");
+      cy.contains("Remove").click();
+      cy.get("#blog-list").should("not.contain", "Old Blog");
+    });
   });
 });
