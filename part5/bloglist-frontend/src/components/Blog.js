@@ -7,13 +7,13 @@ const Blog = ({ blog, handleLike, handleDelete, canBeRemoved }) => (
       border: "solid 1px black",
       margin: "0.3em 0",
     }}
+    className="blog"
   >
     {blog.title} {blog.author}
     <Togglable name="View">
       <p>{blog.url}</p>
-      <p>
-        {blog.likes} likes <button onClick={handleLike}>Like</button>
-      </p>
+      <p className="likes">{blog.likes} likes</p>
+      <button onClick={handleLike}>Like</button>
       {canBeRemoved && (
         <button
           onClick={() => {

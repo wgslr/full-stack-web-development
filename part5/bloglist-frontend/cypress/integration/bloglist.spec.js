@@ -50,6 +50,28 @@ describe("Blog app", function () {
           },
           auth: { bearer: user.token },
         });
+        cy.request({
+          method: "POST",
+          url: "http://localhost:3001/api/blogs",
+          body: {
+            title: "Favourite blog",
+            author: "Favourite author",
+            likes: 10,
+            url: "/best/url",
+          },
+          auth: { bearer: user.token },
+        });
+        cy.request({
+          method: "POST",
+          url: "http://localhost:3001/api/blogs",
+          body: {
+            title: "Other Blog",
+            author: "Other Author",
+            likes: 4,
+            url: "/other/url",
+          },
+          auth: { bearer: user.token },
+        });
       });
 
       cy.visit("http://localhost:3000");
@@ -65,17 +87,31 @@ describe("Blog app", function () {
     });
 
     it("A blog can be liked", function () {
-      cy.contains("View").click();
-      cy.contains("3 likes");
+      cy.get(".blog:first-child").contains("View").click();
+      cy.contains("10 likes");
       cy.contains("Like").click();
-      cy.contains("4 likes");
+      cy.contains("11 likes");
     });
 
     it("A blog can be removed", function () {
-      cy.contains("View").click();
-      cy.get("#blog-list").should("contain", "Old Blog");
-      cy.contains("Remove").click();
+      cy.get('.blog:contains("Old Blog")').within(() => {
+        cy.contains("View").click();
+        cy.contains("Remove").click();
+      });
       cy.get("#blog-list").should("not.contain", "Old Blog");
+    });
+
+    it("Blog list is sorted", function () {
+      cy.get("#blog-list").within(() => {
+        cy.get('button:contains("View")').click({ multiple: true });
+        cy.get('.likes:contains("likes")').then((likes) => {
+          const counts = likes
+            .map((_i, el) => el.innerText)
+            .map((_, likesText) => likesText.split(" ")[0])
+            .map((_, likesText) => Number(likesText));
+          cy.wrap([...counts]).should("deep.eq", [10, 4, 3]);
+        });
+      });
     });
   });
 });
