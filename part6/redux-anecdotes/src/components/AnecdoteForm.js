@@ -1,21 +1,25 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addAnecdoteAction } from "../reducers/anecdoteReducer";
+import { addAnecdoteAction, asObject } from "../reducers/anecdoteReducer";
 import {
   setNotificationAction,
   unsetNotificationAction,
 } from "../reducers/notificationReducer";
+import axios from "axios";
 
 const AnecdoteForm = (props) => {
   const dispatch = useDispatch();
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log();
-    dispatch(addAnecdoteAction({ content: e.target.content.value }));
-    dispatch(setNotificationAction("Anecdote added"));
-    setTimeout(() => {
-      dispatch(unsetNotificationAction());
-    }, 5000);
+    const content = e.target.content.value;
+    const newAnecdote = asObject(content);
+    axios.post("/anecdotes", newAnecdote).then(() => {
+      dispatch(addAnecdoteAction(newAnecdote));
+      dispatch(setNotificationAction("Anecdote added"));
+      setTimeout(() => {
+        dispatch(unsetNotificationAction());
+      }, 5000);
+    });
   };
 
   return (
