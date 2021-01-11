@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addAnecdote } from "../reducers/anecdoteReducer";
+import { addAnecdoteAction } from "../reducers/anecdoteReducer";
 
 const AnecdoteForm = (props) => {
   const dispatch = useDispatch();
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log();
-    dispatch(addAnecdote({ content: e.target.content.value }));
+    dispatch(addAnecdoteAction({ content: e.target.content.value }));
   };
 
   return (

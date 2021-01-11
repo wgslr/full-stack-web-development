@@ -46,7 +46,7 @@ export const voteAction = (anecdoteId) => ({
   data: { anecdoteId },
 });
 
-export const addAnecdote = (data) => ({
+export const addAnecdoteAction = (data) => ({
   type: "ADD",
   data,
 });
